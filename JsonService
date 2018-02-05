@@ -1,0 +1,89 @@
+package com.jsonnjson.service;
+
+import java.util.Iterator;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+
+@Component
+public class JsonService implements Service {
+
+	public void printJsonObject(JSONObject jsonObj, int level) {
+		int i = 0;
+		StringBuilder sb = new StringBuilder();
+		for (Object key : jsonObj.keySet()) {
+
+			// based on you key types
+			String keyStr = (String) key;
+			Object keyvalue = jsonObj.get(keyStr);
+
+			// Print key and value
+			if (!(keyvalue instanceof JSONObject || keyvalue instanceof JSONArray))
+				System.out.println(noOfTab(level) + "key: "+sb.toString()+"."+ keyStr + " value: " + keyvalue + " : " + keyvalue.getClass());
+			else {
+				sb.append(key);
+				System.out.println("-->"+sb.toString());
+			}
+			// for nested objects iteration if required
+			if (keyvalue instanceof JSONObject) {
+
+				printJsonObject((JSONObject) keyvalue, 1);
+			} else if (keyvalue instanceof JSONArray) {
+
+				Iterator<?> keys = ((JSONArray) keyvalue).iterator();
+				while (keys.hasNext()) {
+
+					// System.out.println("\t\tkey.. "+key+", value "+keys.getClass());
+					Object obj = keys.next();
+					if (obj instanceof JSONObject)
+						printJsonObject((JSONObject) obj, 2);
+
+				}
+
+			}
+
+		}
+
+	}
+
+	public String noOfTab(int level) {
+		StringBuilder sb = new StringBuilder();
+		String str = "\t";
+		for(int i=0;i<level;i++) {
+			
+			sb.append(str);
+		}
+		return sb.toString();
+	}
+
+	public void getData(String json) {
+		// iterateJson(json);
+		JSONObject tomJsonObject = new JSONObject(json);
+
+		printJsonObject(tomJsonObject, 0);
+		/*
+		 * JSONObject jObject = null; try { jObject = new JSONObject(json.trim()); }
+		 * catch (JSONException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } Iterator<?> keys = jObject.keys();
+		 * 
+		 * while( keys.hasNext() ) { String key = (String)keys.next();
+		 * System.out.println("key: "+key); try { if ( jObject.get(key) instanceof
+		 * JSONObject ) {
+		 * 
+		 * } } catch (JSONException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } }
+		 */
+
+		/*
+		 * JSONParser parser = new JSONParser();
+		 * 
+		 * //System.out.println("json: "+json); Object obj = parser.parse(json);
+		 * 
+		 * JSONObject jsonObject = (JSONObject) obj; printJsonObject(jsonObject);
+		 */
+	}
+
+}
